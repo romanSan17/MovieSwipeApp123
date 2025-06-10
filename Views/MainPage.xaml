@@ -1,0 +1,42 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MovieSwipeApp.Views.MainPage"
+             Title="Фильмы">
+
+    <Grid RowDefinitions="Auto,*">
+        <!-- Top bar -->
+        <HorizontalStackLayout Padding="8" Spacing="8">
+            <Picker x:Name="GenrePicker"
+                    WidthRequest="150"
+                    Title="Жанр"
+                    SelectedIndexChanged="OnGenreChanged" />
+            <Button Text="Профиль"
+                    Clicked="OnProfile" />
+        </HorizontalStackLayout>
+
+        <!-- List of swipeable movie cards -->
+        <CollectionView x:Name="MoviesCollectionView"
+                Grid.Row="1"
+                SelectionMode="None">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <SwipeView>
+                        <SwipeView.RightItems>
+                            <SwipeItems>
+                                <SwipeItem Text="Лайк"
+                                   BackgroundColor="LightGreen"
+                                   Invoked="OnSwipeLike"/>
+                            </SwipeItems>
+                        </SwipeView.RightItems>
+                        <Frame Margin="10" Padding="10" BackgroundColor="LightGray" CornerRadius="10">
+                            <VerticalStackLayout>
+                                <Label Text="{Binding Title}" FontSize="20" FontAttributes="Bold"/>
+                                <Label Text="{Binding Genre}" FontSize="14"/>
+                            </VerticalStackLayout>
+                        </Frame>
+                    </SwipeView>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>
