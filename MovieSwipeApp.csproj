@@ -11,22 +11,36 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  
-  
-  <ItemGroup>
-    <!-- UI компоненты -->
 
-    <!-- SQLite база данных -->
-    <PackageReference Include="CommunityToolkit.Maui" Version="9.0.0" />
-    <PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
 
-    <!-- Логирование -->
+	<ItemGroup>
+    <!-- UI-компоненты: стабильная ветка -->
+    <!-- SQLite: стабильный релиз -->
+    <!-- Логирование можно оставить -->
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.5" />
   </ItemGroup>
 
+  <!-- фиксируем версию MAUI Controls -->
   <ItemGroup>
+    <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.14" />
+    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.14" />
+    <PackageReference Include="sqlite-net-pcl" Version="1.9.0" />
+  </ItemGroup>
+
+
+	<ItemGroup>
     <!-- Явно исключаем всё, что называется AndroidManifest.xml в корне -->
     <None Remove="AndroidManifest.xml" />
+    <None Remove="Platforms\Android\Resources\Images\ast.jpg" />
+    <None Remove="Platforms\Android\Resources\Images\inter.jpg" />
+    <None Remove="Platforms\Android\Resources\Images\mal.jpg" />
+    <None Remove="Platforms\Android\Resources\Images\mat.jpg" />
+    <None Remove="Platforms\Android\Resources\Images\nech.png" />
+    <None Remove="Platforms\Android\Resources\Images\pro.jpg" />
+    <None Remove="Platforms\Android\Resources\Images\scream.jpg" />
+    <None Remove="Platforms\Android\Resources\Images\sup.jpg" />
+    <None Remove="Platforms\Android\Resources\Images\zak.jpg" />
+    <None Remove="Platforms\Android\Resources\Images\zel.jpg" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -60,6 +74,20 @@
 
   <ItemGroup>
     <Folder Include="Resources\Images\" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <MauiImage Include="Platforms\Android\Resources\Images\ast.jpg" />
+    <MauiImage Include="Platforms\Android\Resources\Images\inter.jpg" />
+    <MauiImage Include="Platforms\Android\Resources\Images\mal.jpg" />
+    <MauiImage Include="Platforms\Android\Resources\Images\mat.jpg" />
+    <MauiImage Include="Platforms\Android\Resources\Images\nech.png" />
+    <MauiImage Include="Platforms\Android\Resources\Images\pro.jpg" />
+    <MauiImage Include="Platforms\Android\Resources\Images\scream.jpg" />
+    <MauiImage Include="Platforms\Android\Resources\Images\sup.jpg" />
+    <MauiImage Include="Platforms\Android\Resources\Images\zak.jpg" />
+    <MauiImage Include="Platforms\Android\Resources\Images\zel.jpg" />
   </ItemGroup>
 
 </Project>

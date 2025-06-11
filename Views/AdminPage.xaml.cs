@@ -1,6 +1,5 @@
 using MovieSwipeApp.Models;
 using MovieSwipeApp.Services;
-using Windows.System;
 
 namespace MovieSwipeApp.Views;
 

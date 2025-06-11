@@ -1,42 +1,78 @@
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="MovieSwipeApp.Views.MainPage"
-             Title="Фильмы">
+<?xml version="1.0" encoding="utf-8"?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="MovieSwipeApp.Views.MainPage"
+    Title="Фильмы">
 
-    <Grid RowDefinitions="Auto,*">
-        <!-- Top bar -->
-        <HorizontalStackLayout Padding="8" Spacing="8">
-            <Picker x:Name="GenrePicker"
-                    WidthRequest="150"
-                    Title="Жанр"
-                    SelectedIndexChanged="OnGenreChanged" />
-            <Button Text="Профиль"
-                    Clicked="OnProfile" />
+    <Grid RowDefinitions="Auto,*,Auto,Auto" Padding="12" RowSpacing="12">
+
+        <!-- Жанры + кнопка Профиль -->
+        <HorizontalStackLayout Grid.Row="0" Spacing="8">
+            <Picker
+        x:Name="GenrePicker"
+        WidthRequest="150"
+        Title="Жанр"
+        SelectedIndexChanged="OnGenreChanged" />
+            <Button
+        Text="Профиль"
+        Clicked="OnProfile" />
         </HorizontalStackLayout>
 
-        <!-- List of swipeable movie cards -->
-        <CollectionView x:Name="MoviesCollectionView"
-                Grid.Row="1"
-                SelectionMode="None">
-            <CollectionView.ItemTemplate>
+        <!-- Слайдер карточек фильмов -->
+        <CarouselView
+      x:Name="MovieCarousel"
+      Grid.Row="1"
+      ItemsSource="{Binding Movies}"
+      IndicatorView="{x:Reference Indicator}">
+            <CarouselView.ItemTemplate>
                 <DataTemplate>
-                    <SwipeView>
-                        <SwipeView.RightItems>
-                            <SwipeItems>
-                                <SwipeItem Text="Лайк"
-                                   BackgroundColor="LightGreen"
-                                   Invoked="OnSwipeLike"/>
-                            </SwipeItems>
-                        </SwipeView.RightItems>
-                        <Frame Margin="10" Padding="10" BackgroundColor="LightGray" CornerRadius="10">
-                            <VerticalStackLayout>
-                                <Label Text="{Binding Title}" FontSize="20" FontAttributes="Bold"/>
-                                <Label Text="{Binding Genre}" FontSize="14"/>
-                            </VerticalStackLayout>
-                        </Frame>
-                    </SwipeView>
+                    <Frame Padding="16" CornerRadius="12" HasShadow="True" Margin="0,12">
+                        <Grid RowDefinitions="* ,Auto" ColumnDefinitions="*">
+
+                            <!-- Постер фильма -->
+                            <Image
+                Source="{Binding PosterUrl}"
+                Aspect="AspectFill"
+                Grid.Row="0"
+                HeightRequest="200"
+                WidthRequest="140" />
+
+                            <!-- Название поверх снизу -->
+                            <Label
+                Grid.Row="1"
+                Text="{Binding Title}"
+                BackgroundColor="#80000000"
+                TextColor="White"
+                Padding="8,4"
+                HorizontalOptions="Fill"
+                FontSize="20" />
+                        </Grid>
+                    </Frame>
                 </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+            </CarouselView.ItemTemplate>
+        </CarouselView>
+
+        <!-- Точки-индикатор -->
+        <IndicatorView
+      x:Name="Indicator"
+      Grid.Row="2"
+      HorizontalOptions="Center"
+      IndicatorColor="Gray"
+      SelectedIndicatorColor="Black" />
+
+        <!-- Кнопки не нравится / нравится -->
+        <HorizontalStackLayout
+      Grid.Row="3"
+      Spacing="40"
+      HorizontalOptions="Center">
+            <Button
+        Text="👎"
+        Clicked="OnDislikeClicked" />
+            <Button
+        Text="👍"
+        Clicked="OnLikeClicked" />
+        </HorizontalStackLayout>
+
     </Grid>
 </ContentPage>

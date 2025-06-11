@@ -1,9 +1,6 @@
-using System.Collections.ObjectModel;
-using CommunityToolkit.Maui.Views;
 using MovieSwipeApp.Models;
 using MovieSwipeApp.Services;
-using Windows.System;
-
+using System.Collections.ObjectModel;
 
 namespace MovieSwipeApp.Views;
 
@@ -11,28 +8,20 @@ public partial class ProfilePage : ContentPage
 {
     readonly User _user;
 
-    // промежуточный класс-обёртка для биндинга
-    class LikedItem
+    // Вспомогательный класс, чтобы хранить пару Movie + UserMovie
+    public class LikedItem
     {
         public Movie Movie { get; init; } = null!;
         public UserMovie UserMovie { get; init; } = null!;
-
-        public string Title => Movie.Title;
-        public string PosterUrl => Movie.PosterUrl;
-        public int Rating
-        {
-            get => UserMovie.Rating;
-            set => UserMovie.Rating = value;
-        }
     }
 
-    readonly ObservableCollection<LikedItem> _items = new();
+    public ObservableCollection<LikedItem> LikedItems { get; } = new();
 
     public ProfilePage(User user)
     {
-        _user = user;
         InitializeComponent();
-        LikedView.ItemsSource = _items;
+        _user = user;
+        BindingContext = this;
     }
 
     protected override async void OnAppearing()
@@ -43,19 +32,35 @@ public partial class ProfilePage : ContentPage
 
     async Task LoadLikedAsync()
     {
-        _items.Clear();
-
-        var liked = await DatabaseService.GetLikedMoviesAsync(_user.Id);
-        foreach (var (movie, um) in liked)
-            _items.Add(new LikedItem { Movie = movie, UserMovie = um });
+        LikedItems.Clear();
+        var list = await DatabaseService.GetLikedMoviesAsync(_user.Id);
+        foreach (var (movie, um) in list)
+        {
+            LikedItems.Add(new LikedItem
+            {
+                Movie = movie,
+                UserMovie = um
+            });
+        }
     }
 
-    //async void OnRatingChanged(object sender, ValueChangedEventArgs e)
-    //{
-    //    if (sender is not RatingView rv || rv.BindingContext is not LikedItem li) return;
+    async void OnStarsTapped(object sender, EventArgs e)
+    {
+        if (sender is not Label lbl) return;
+        if (lbl.BindingContext is not LikedItem li) return;
 
+        string result = await DisplayPromptAsync(
+            "Оценка",
+            $"Введите рейтинг для «{li.Movie.Title}» (0–5):",
+            initialValue: li.UserMovie.Rating.ToString(),
+            maxLength: 1,
+            keyboard: Keyboard.Numeric);
 
-    //    // обновляем БД
-    //    await DatabaseService.UpdateRatingAsync(li.UserMovie);
-    //}
+        if (int.TryParse(result, out int r) && r >= 0 && r <= 5)
+        {
+            li.UserMovie.Rating = r;
+            await DatabaseService.UpdateRatingAsync(li.UserMovie);
+            await LoadLikedAsync();
+        }
+    }
 }

@@ -1,6 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
-	<application android:allowBackup="true" android:icon="@mipmap/appicon" android:roundIcon="@mipmap/appicon_round" android:supportsRtl="true"></application>
-	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.companyname.movieswipeapp">
+
+	<!-- Уровни API MAUI задаёт в csproj, этот блок можно убрать -->
+	<!--
+  <uses-sdk
+      android:minSdkVersion="21"
+      android:targetSdkVersion="33" />
+  -->
+
+	<application
+		android:allowBackup="true"
+		android:supportsRtl="true"
+		android:label="MovieSwipeApp">
+		<!-- иконки MAUI возьмёт из Resources\Images автоматически -->
+	</application>
+
+	<!-- Разрешения, если нужны -->
 	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
 </manifest>

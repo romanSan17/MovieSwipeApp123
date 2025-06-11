@@ -1,49 +1,75 @@
-﻿using CommunityToolkit.Maui.Views;
+﻿using System.Collections.ObjectModel;
 using MovieSwipeApp.Models;
 using MovieSwipeApp.Services;
-using Windows.Networking.NetworkOperators;
-using Windows.System;
 
 namespace MovieSwipeApp.Views;
 
 public partial class MainPage : ContentPage
 {
     readonly User _user;
-    List<Movie> _movies = new();
+    readonly ObservableCollection<Movie> _movies = new();
+
+    public IList<Movie> Movies => _movies;
 
     public MainPage(User user)
     {
-        _user = user;
         InitializeComponent();
-        GenrePicker.ItemsSource = new[] { "Все", "horror", "comedy", "drama", "sci‑fi" };
+        _user = user;
+
+        // Настраиваем список жанров
+        GenrePicker.ItemsSource = new[] { "Все", "horror", "comedy", "drama", "sci-fi" };
         GenrePicker.SelectedIndex = 0;
+
+        BindingContext = this;
     }
 
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        await LoadMovies();
+        await LoadMoviesAsync();
     }
 
-    async Task LoadMovies()
+    async Task LoadMoviesAsync()
     {
         var genre = GenrePicker.SelectedItem?.ToString();
-        _movies = await DatabaseService.GetMoviesAsync(genre == "Все" ? null : genre);
-        MoviesCollectionView.ItemsSource = _movies;
+        var list = await DatabaseService.GetMoviesAsync(genre == "Все" ? null : genre);
+
+        _movies.Clear();
+        foreach (var m in list)
+            _movies.Add(m);
+
+        // Сбрасываем позицию слайдера на первый фильм
+        MovieCarousel.Position = 0;
     }
 
-    async void OnGenreChanged(object sender, EventArgs e) => await LoadMovies();
-
-    async void OnProfile(object sender, EventArgs e) => await Navigation.PushAsync(new ProfilePage(_user));
-
-    async void OnSwipeLike(object sender, EventArgs e)
+    // «Нравится» — лайкаем и удаляем из списка
+    async void OnLikeClicked(object sender, EventArgs e)
     {
-        if (sender is SwipeItem swipeItem && swipeItem.BindingContext is Movie movie)
+        if (MovieCarousel.CurrentItem is Movie m)
         {
-            await DatabaseService.LikeMovieAsync(_user.Id, movie.Id);
-            _movies.Remove(movie);
-            MoviesCollectionView.ItemsSource = null; // force UI refresh
-            MoviesCollectionView.ItemsSource = _movies;
+            await DatabaseService.LikeMovieAsync(_user.Id, m.Id);
+            _movies.Remove(m);
+            MovieCarousel.ItemsSource = null;
+            MovieCarousel.ItemsSource = Movies;
         }
     }
+
+    // «Не нравится» — просто удаляем из списка
+    void OnDislikeClicked(object sender, EventArgs e)
+    {
+        if (MovieCarousel.CurrentItem is Movie m)
+        {
+            _movies.Remove(m);
+            MovieCarousel.ItemsSource = null;
+            MovieCarousel.ItemsSource = Movies;
+        }
+    }
+
+    // При смене жанра — перезагружаем
+    async void OnGenreChanged(object sender, EventArgs e)
+        => await LoadMoviesAsync();
+
+    // Переход в профиль
+    async void OnProfile(object sender, EventArgs e)
+        => await Navigation.PushAsync(new ProfilePage(_user));
 }

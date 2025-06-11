@@ -1,7 +1,6 @@
 ﻿using SQLite;
 using MovieSwipeApp.Models;
 using MovieSwipeApp.Helpers;
-using Windows.System;
 
 namespace MovieSwipeApp.Services;
 
