@@ -8,7 +8,6 @@ public partial class ProfilePage : ContentPage
 {
     readonly User _user;
 
-    // Вспомогательный класс, чтобы хранить пару Movie + UserMovie
     public class LikedItem
     {
         public Movie Movie { get; init; } = null!;
@@ -50,8 +49,8 @@ public partial class ProfilePage : ContentPage
         if (lbl.BindingContext is not LikedItem li) return;
 
         string result = await DisplayPromptAsync(
-            "Оценка",
-            $"Введите рейтинг для «{li.Movie.Title}» (0–5):",
+            "ГЋГ¶ГҐГ­ГЄГ ",
+            $"Г‚ГўГҐГ¤ГЁГІГҐ Г°ГҐГ©ГІГЁГ­ГЈ Г¤Г«Гї В«{li.Movie.Title}В» (0вЂ“5):",
             initialValue: li.UserMovie.Rating.ToString(),
             maxLength: 1,
             keyboard: Keyboard.Numeric);
